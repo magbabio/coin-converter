@@ -9,9 +9,16 @@ export class BinanceController {
   async getP2P() {
     const ads = await this.binanceService.scrapeP2P();
     return ads.map((ad) => ({
-      vendedor: ad.advertiser.nickName,
-      precio: `${ad.adv.price} ${ad.adv.fiatUnit}`,
-      metodos: ad.adv.tradeMethods.map((m) => m.tradeMethodName),
+      seller: ad.advertiser.nickName,
+      price: `${ad.adv.price} ${ad.adv.fiatUnit}`,
+      methods: ad.adv.tradeMethods.map((m) => m.tradeMethodName),
     }));
   }
+
+  @Get('average')
+  async getP2PAverage() {
+  const average = await this.binanceService.getAverageRate();
+  return { average };
+}
+
 }

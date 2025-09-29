@@ -36,4 +36,12 @@ const response = await page.evaluate(async (url, body) => {
     await browser.close();
     return response.data;
   }
+  
+    async getAverageRate(): Promise<number> {
+    const ads = await this.scrapeP2P();
+    const prices = ads.map((ad) => parseFloat(ad.adv.price));
+    const sum = prices.reduce((acc, val) => acc + val, 0);
+    return sum / prices.length;
+  }
 }
+
