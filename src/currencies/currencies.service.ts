@@ -70,15 +70,4 @@ export class CurrenciesService {
       where: { code },
     });
   }
-
-  async updateRates(rates: { code: string; rate: number }[]) {
-    const updates = rates.map(({ code, rate }) =>
-      this.prisma.currency.updateMany({
-        where: { code },
-        data: { rate },
-      })
-    );
-
-    return Promise.all(updates);
-  }
 } 

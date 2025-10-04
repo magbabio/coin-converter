@@ -27,7 +27,6 @@ model Currency {
   code               String             @unique
   symbol             String
   type               CurrencyType
-  rate               Float              @default(1.0)
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
   favoriteCurrencies FavoriteCurrency[]

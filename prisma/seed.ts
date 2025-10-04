@@ -15,28 +15,24 @@ async function main() {
       code: 'USD',
       symbol: '$',
       type: CurrencyType.FIAT,
-      rate: 1.0,
     },
     {
       name: 'Euro',
       code: 'EUR',
       symbol: '€',
       type: CurrencyType.FIAT,
-      rate: 0.85,
     },
     {
       name: 'Tether',
       code: 'USDT',
       symbol: '₮',
       type: CurrencyType.CRYPTO,
-      rate: 1.0,
     },
     {
       name: 'Venezuelan Bolívar',
       code: 'VES',
       symbol: 'Bs',
       type: CurrencyType.FIAT,
-      rate: 123.68,
     },
   ];
 

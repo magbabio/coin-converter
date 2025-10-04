@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { FavoriteCurrenciesModule } from './favorite-currencies/favorite-currencies.module';
+import { ScheduleModule } from '@nestjs/schedule';
 import { BinanceModule } from './scraper/binance.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { BinanceModule } from './scraper/binance.module';
     AuthModule,
     CurrenciesModule,
     FavoriteCurrenciesModule,
+    ScheduleModule.forRoot(),
     BinanceModule
   ],
   controllers: [AppController],

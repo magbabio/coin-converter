@@ -39,9 +39,4 @@ export class CurrenciesController {
   remove(@Param('id') id: string) {
     return this.currenciesService.remove(id);
   }
-
-  @Post('update-rates')
-  updateRates(@Body() rates: { code: string; rate: number }[]) {
-    return this.currenciesService.updateRates(rates);
-  }
 } 

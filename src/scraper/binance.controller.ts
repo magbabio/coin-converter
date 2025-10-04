@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { BinanceService } from './binance.service';
+import { BinanceDto } from './dto/binance-dto';
 
 @Controller('binance')
 export class BinanceController {
@@ -8,17 +9,12 @@ export class BinanceController {
   @Get('p2p')
   async getP2P() {
     const ads = await this.binanceService.scrapeP2P();
-    return ads.map((ad) => ({
-      seller: ad.advertiser.nickName,
-      price: `${ad.adv.price} ${ad.adv.fiatUnit}`,
-      methods: ad.adv.tradeMethods.map((m) => m.tradeMethodName),
-    }));
+    return ads.map((ad) => new BinanceDto(ad));
   }
 
   @Get('average')
   async getP2PAverage() {
-  const average = await this.binanceService.getAverageRate();
-  return { average };
-}
-
+    const average = await this.binanceService.getAverageRate();
+    return { average };
+  }
 }
