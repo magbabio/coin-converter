@@ -7,4 +7,4 @@ import { FavoriteCurrenciesController } from './favorite-currencies.controller';
   providers: [FavoriteCurrenciesService],
   exports: [FavoriteCurrenciesService],
 })
-export class FavoriteCurrenciesModule {} 
+export class FavoriteCurrenciesModule {}

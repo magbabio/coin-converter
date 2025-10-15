@@ -8,8 +8,17 @@ export class BinanceController {
 
   @Get('p2p')
   async getP2P() {
-    const ads = await this.binanceService.scrapeP2P();
-    return ads.map((ad) => new BinanceDto(ad));
+    const [sellAds, buyAds] = await Promise.all([
+      this.binanceService.scrapeP2P('SELL'),
+      this.binanceService.scrapeP2P('BUY'),
+    ]);
+
+    const allAds = [
+      ...sellAds.map((ad) => new BinanceDto(ad, 'SELL')),
+      ...buyAds.map((ad) => new BinanceDto(ad, 'BUY')),
+    ];
+
+    return allAds;
   }
 
   @Get('average')

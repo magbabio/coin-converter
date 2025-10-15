@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString, IsNumber, IsEnum } from 'class-validator';
-import { CurrencyType } from '@prisma/client';
+import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
+import { CurrencyType } from '@prisma/client'; 
 
 export class CreateCurrencyDto {
   @IsNotEmpty()
@@ -17,7 +17,4 @@ export class CreateCurrencyDto {
   @IsNotEmpty()
   @IsEnum(CurrencyType)
   type: CurrencyType;
-
-  @IsNumber()
-  rate: number = 1.0;
 }

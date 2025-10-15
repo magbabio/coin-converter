@@ -6,9 +6,18 @@ import { RateSource } from '@prisma/client';
 export class ExchangeRateService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async saveRate(fromCode: string, toCode: string, rate: number, source: RateSource) {
-    const fromCurrency = await this.prisma.currency.findUnique({ where: { code: fromCode } });
-    const toCurrency = await this.prisma.currency.findUnique({ where: { code: toCode } });
+  async saveRate(
+    fromCode: string,
+    toCode: string,
+    rate: number,
+    source: RateSource,
+  ) {
+    const fromCurrency = await this.prisma.currency.findUnique({
+      where: { code: fromCode },
+    });
+    const toCurrency = await this.prisma.currency.findUnique({
+      where: { code: toCode },
+    });
 
     if (!fromCurrency || !toCurrency) throw new Error('Currency not found');
 

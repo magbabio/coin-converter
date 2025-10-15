@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateFavoriteCurrencyDto } from './dto/create-favorite-currency.dto';
 
@@ -7,7 +11,6 @@ export class FavoriteCurrenciesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createFavoriteCurrencyDto: CreateFavoriteCurrencyDto) {
-    // Check if user exists
     const user = await this.prisma.user.findUnique({
       where: { id: createFavoriteCurrencyDto.userId },
     });
@@ -16,7 +19,6 @@ export class FavoriteCurrenciesService {
       throw new NotFoundException('User not found');
     }
 
-    // Check if currency exists
     const currency = await this.prisma.currency.findUnique({
       where: { id: createFavoriteCurrencyDto.currencyId },
     });
@@ -25,7 +27,6 @@ export class FavoriteCurrenciesService {
       throw new NotFoundException('Currency not found');
     }
 
-    // Check if favorite already exists
     const existingFavorite = await this.prisma.favoriteCurrency.findUnique({
       where: {
         userId_currencyId: {
@@ -113,7 +114,7 @@ export class FavoriteCurrenciesService {
 
   async remove(id: string) {
     await this.findOne(id);
-    
+
     return this.prisma.favoriteCurrency.delete({
       where: { id },
       include: {
@@ -164,4 +165,4 @@ export class FavoriteCurrenciesService {
       },
     });
   }
-} 
+}

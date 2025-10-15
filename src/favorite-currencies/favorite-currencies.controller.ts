@@ -1,17 +1,12 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { FavoriteCurrenciesService } from './favorite-currencies.service';
 import { CreateFavoriteCurrencyDto } from './dto/create-favorite-currency.dto';
 
 @Controller('favorite-currencies')
 export class FavoriteCurrenciesController {
-  constructor(private readonly favoriteCurrenciesService: FavoriteCurrenciesService) {}
+  constructor(
+    private readonly favoriteCurrenciesService: FavoriteCurrenciesService,
+  ) {}
 
   @Post()
   create(@Body() createFavoriteCurrencyDto: CreateFavoriteCurrencyDto) {
@@ -43,6 +38,9 @@ export class FavoriteCurrenciesController {
     @Param('userId') userId: string,
     @Param('currencyId') currencyId: string,
   ) {
-    return this.favoriteCurrenciesService.removeByUserAndCurrency(userId, currencyId);
+    return this.favoriteCurrenciesService.removeByUserAndCurrency(
+      userId,
+      currencyId,
+    );
   }
-} 
+}

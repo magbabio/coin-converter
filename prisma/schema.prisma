@@ -13,6 +13,7 @@ model User {
   lastName           String
   email              String             @unique
   password           String
+  role               Role               @default(USER) // 👈 NUEVO CAMPO
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
   favoriteCurrencies FavoriteCurrency[]
@@ -22,16 +23,16 @@ model User {
 }
 
 model Currency {
-  id                 String             @id @default(cuid())
+  id                 String              @id @default(cuid())
   name               String
-  code               String             @unique
+  code               String              @unique
   symbol             String
   type               CurrencyType
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
   favoriteCurrencies FavoriteCurrency[]
-  ratesFrom          ExchangeRate[]     @relation("FromCurrency")
-  ratesTo            ExchangeRate[]     @relation("ToCurrency")
+  ratesFrom          ExchangeRate[]      @relation("FromCurrency")
+  ratesTo            ExchangeRate[]      @relation("ToCurrency")
   conversionsFrom    ConversionHistory[] @relation("ConversionFrom")
   conversionsTo      ConversionHistory[] @relation("ConversionTo")
 
@@ -76,13 +77,18 @@ model ConversionHistory {
   result         Float
   rateUsed       Float
   source         RateSource
-  createdAt      DateTime @default(now())
+  createdAt      DateTime  @default(now())
 
   user           User     @relation(fields: [userId], references: [id])
   fromCurrency   Currency @relation("ConversionFrom", fields: [fromCurrencyId], references: [id])
   toCurrency     Currency @relation("ConversionTo", fields: [toCurrencyId], references: [id])
 
   @@map("conversion_history")
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 enum CurrencyType {

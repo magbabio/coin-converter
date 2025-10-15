@@ -1,14 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { PrismaClient, CurrencyType } from '../generated/prisma';
+import { PrismaClient, CurrencyType, Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Starting database seeding...');
-
-  // Insert currencies
   const currencies = [
     {
       name: 'US Dollar',
@@ -36,7 +31,6 @@ async function main() {
     },
   ];
 
-  console.log('Creating currencies...');
   for (const currency of currencies) {
     await prisma.currency.upsert({
       where: { code: currency.code },
@@ -45,25 +39,25 @@ async function main() {
     });
   }
 
-  // Sample users
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   const users = [
     {
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@example.com',
+      firstName: 'Admin',
+      lastName: 'User',
+      email: 'admin@example.com',
       password: hashedPassword,
+      role: Role.ADMIN, 
     },
     {
       firstName: 'Jane',
       lastName: 'Smith',
       email: 'jane.smith@example.com',
       password: hashedPassword,
+      role: Role.USER,
     },
   ];
 
-  console.log('Creating users...');
   for (const user of users) {
     await prisma.user.upsert({
       where: { email: user.email },
@@ -72,9 +66,8 @@ async function main() {
     });
   }
 
-  // Favorite currencies
-  const john = await prisma.user.findUnique({
-    where: { email: 'john.doe@example.com' },
+  const admin = await prisma.user.findUnique({
+    where: { email: 'admin@example.com' },
   });
 
   const jane = await prisma.user.findUnique({
@@ -89,17 +82,17 @@ async function main() {
     where: { code: 'EUR' },
   });
 
-  if (john && usdt) {
+  if (admin && usdt) {
     await prisma.favoriteCurrency.upsert({
       where: {
         userId_currencyId: {
-          userId: john.id,
+          userId: admin.id,
           currencyId: usdt.id,
         },
       },
       update: {},
       create: {
-        userId: john.id,
+        userId: admin.id,
         currencyId: usdt.id,
       },
     });
@@ -121,7 +114,6 @@ async function main() {
     });
   }
 
-  console.log('Database seeding completed.');
 }
 
 main()

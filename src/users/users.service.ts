@@ -1,11 +1,9 @@
-import {
-  Injectable,
-  ConflictException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Role } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User, ResponseWithMessage } from '../users/interfaces/users.interfaces';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -13,6 +11,7 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
+
     const existingUser = await this.prisma.user.findUnique({
       where: { email: createUserDto.email },
     });
@@ -23,36 +22,49 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         ...createUserDto,
         password: hashedPassword,
+        role: createUserDto.role
       },
       select: {
         id: true,
         firstName: true,
         lastName: true,
         email: true,
+        role: true,
         createdAt: true,
         updatedAt: true,
       },
     });
+
+    return {
+      message: 'User created successfully',
+      data: user,
+    };
   }
 
-  async findAll() {
-    return this.prisma.user.findMany({
+  async findAll(): Promise<ResponseWithMessage<User[]>> {
+    const users = await this.prisma.user.findMany({
       select: {
         id: true,
         firstName: true,
         lastName: true,
         email: true,
+        role:true,
         createdAt: true,
         updatedAt: true,
       },
     });
+
+    return {
+      message: 'Users retrieved successfully',
+      data: users,
+    };
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<ResponseWithMessage<User>> {
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
@@ -60,6 +72,7 @@ export class UsersService {
         firstName: true,
         lastName: true,
         email: true,
+        role:true,
         createdAt: true,
         updatedAt: true,
       },
@@ -69,23 +82,28 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    return user;
+    return {
+      message: 'User retrieved successfully',
+      data: user,
+    };
   }
 
-  async findByEmail(email: string) {
-    return this.prisma.user.findUnique({
-      where: { email },
-    });
+  async findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { email } });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.findOne(id);
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<ResponseWithMessage<User>> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
 
-    return this.prisma.user.update({
+    const updatedUser = await this.prisma.user.update({
       where: { id },
       data: updateUserDto,
       select: {
@@ -93,16 +111,26 @@ export class UsersService {
         firstName: true,
         lastName: true,
         email: true,
+        role: true,
         createdAt: true,
         updatedAt: true,
       },
     });
+
+    return {
+      message: 'User updated successfully',
+      data: updatedUser,
+    };
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
+  async remove(id: string): Promise<ResponseWithMessage<User>> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
 
-    return this.prisma.user.delete({
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const deletedUser = await this.prisma.user.delete({
       where: { id },
       select: {
         id: true,
@@ -113,5 +141,10 @@ export class UsersService {
         updatedAt: true,
       },
     });
+
+    return {
+      message: 'User deleted successfully',
+      data: deletedUser,
+    };
   }
 }

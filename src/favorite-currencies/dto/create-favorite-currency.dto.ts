@@ -8,4 +8,4 @@ export class CreateFavoriteCurrencyDto {
   @IsNotEmpty()
   @IsString()
   currencyId: string;
-} 
+}

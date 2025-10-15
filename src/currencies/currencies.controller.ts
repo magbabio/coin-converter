@@ -31,7 +31,10 @@ export class CurrenciesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCurrencyDto: UpdateCurrencyDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCurrencyDto: UpdateCurrencyDto,
+  ) {
     return this.currenciesService.update(id, updateCurrencyDto);
   }
 
@@ -39,4 +42,4 @@ export class CurrenciesController {
   remove(@Param('id') id: string) {
     return this.currenciesService.remove(id);
   }
-} 
+}
