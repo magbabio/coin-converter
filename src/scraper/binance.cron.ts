@@ -6,9 +6,8 @@ import { BinanceService } from './binance.service';
 export class BinanceCron {
   constructor(private readonly binanceService: BinanceService) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_DAY_AT_8PM)
   async handleCron() {
     await this.binanceService.saveAverageRate();
-    console.log('Average rate succesfully saved');
   }
 }
