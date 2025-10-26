@@ -1,5 +1,6 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -31,10 +32,45 @@ export class AuthService {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      role: user.role
     };
 
     return {
       access_token: this.jwtService.sign(payload, { noTimestamp: true }),
     };
+  }
+
+ async register(createUserDto: CreateUserDto) {
+  const existingUser = await this.prisma.user.findUnique({
+    where: { email: createUserDto.email },
+  });
+
+  if (existingUser) {
+    throw new ConflictException('User with this email already exists');
+  }
+
+  const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
+  const user = await this.prisma.user.create({
+    data: {
+      ...createUserDto,
+      password: hashedPassword,
+      role: 'USER', 
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  return {
+    message: 'User created successfully',
+    data: user,
+  };
   }
 }

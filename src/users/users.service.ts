@@ -1,6 +1,5 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Role } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, ResponseWithMessage } from '../users/interfaces/users.interfaces';
@@ -10,7 +9,12 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async createByAdmin(createUserDto: CreateUserDto, adminId: string) {
+    const admin = await this.prisma.user.findUnique({ where: { id: adminId } });
+
+    if (!admin || admin.role !== 'ADMIN') {
+      throw new ConflictException('Only admins can create users with custom roles');
+    }
 
     const existingUser = await this.prisma.user.findUnique({
       where: { email: createUserDto.email },
@@ -26,7 +30,6 @@ export class UsersService {
       data: {
         ...createUserDto,
         password: hashedPassword,
-        role: createUserDto.role
       },
       select: {
         id: true,
@@ -40,7 +43,7 @@ export class UsersService {
     });
 
     return {
-      message: 'User created successfully',
+      message: `User created successfully with role ${user.role}`,
       data: user,
     };
   }
