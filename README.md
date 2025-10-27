@@ -20,16 +20,17 @@
 
 ## About the Project
 
-This is a **NestJS** project built with **TypeScript**, **Prisma ORM**, and **PostgreSQL**. **Coin Converter** is a currency conversion platform that automates real-time exchange rate updates through **web scraping with Puppeteer**. The system provides users with accurate conversions, user profile, and a history of their conversions.
+A scalable **NestJS** backend built with **TypeScript**, **Prisma**, and **PostgreSQL**, providing robust user and currency management, real-time currency conversion, and automated exchange rate updates through **web scraping with Puppeteer**. Designed with JWT authentication, role-based access control, and DTO validation for secure and maintainable endpoints.
 
 ## Features
 
-- **Real-Time Exchange Rates**: Automatically retrieves and saves average exchange rates from Binance using Puppeteer web scraping.  
-- **Currency Management**: Create, update, and retrieve currency data with full validation and conflict handling.  
-- **Favorite Currencies**: Users can mark currencies as favorites and retrieve their personalized lists.  
-- **Automated Scraping**: CRON jobs execute background scraping tasks to keep exchange rates up to date.  
-- **User Management**: User creation, update, and deletion with hashed passwords using bcrypt.  
-- **Validation**: All modules implement DTO validation and custom exceptions.  
+- **Exchange Rates Management**: Retrieve and store real-time average exchange rates from Binance via Puppeteer web scraping. 
+- **Currencies Management**: Create, update, and retrieve currency data with full validation and conflict handling.  
+- **Favorite Currencies**: Users can mark currencies as favorites and retrieve personalized lists.
+- **Automated Scraping**: Background CRON jobs run scheduled scraping tasks to keep exchange rates up to date.
+- **Users Management**: Create, update, and delete users with hashed passwords and role-based access control.
+- **Authentication**: JWT-based authentication for secure access to endpoints.
+- **Validation & Error Handling**: DTO validation and centralized exception handling for robust and consistent API responses.
 
 ## Architecture
 
@@ -64,7 +65,20 @@ Each module has a service that contains the business logic:
 - **FavoriteCurrenciesService**
 - **ExchangeRateService**  
 - **BinanceService**  
-- **UsersService**  
+- **UsersService**
+
+### DTOs
+
+Data Transfer Objects (DTOs) are used for input validation:
+
+- **CreateCurrencyDto**: Validates currency creation data.
+- **UpdateCurrencyDto**: Validates currency update data.
+- **CreateUserDto**: Validates user creation data.
+- **UpdateUserDto**: Validates user update data.
+
+### Validation
+
+Global validation is enabled using `ValidationPipe` in `main.ts`. This ensures all incoming data is validated against the defined DTOs.
 
 ## Setup
 
@@ -107,10 +121,12 @@ npm run start:dev
 ```
 src/
 ├── auth/                             # Authentication module
-├── config/                           # Users module
+├── config/                           # entralized backend configuration
 ├── conversion/                       # Conversion module
 ├── currencies/                       # Currencies module
 ├── favorite-currencies/              # Favorite currencies module
+├── filters/                          # Global exception filter
+├── interceptors/                     # Global response interceptor
 ├── prisma/                           # Prisma ORM configuration and database access
 ├── scraper/                          # Puppeteer-based web scraping for exchange rates
 ├── users/                            # Users module
@@ -118,10 +134,38 @@ src/
 └── main.ts                           # Application entry point
 
 ```
+## Endpoints
+
+### Authentication
+
+| Method | Endpoint    | Description                                |
+| ------ | ----------- | ------------------------------------------ |
+| POST   | `/login`    | User login with email and password.        |
+| POST   | `/register` | User registration with email and password. |
+
+### Users
+
+| Method | Endpoint      | Description                                                          |
+| ------ | ------------- | -------------------------------------------------------------------- |
+| POST   | `/users/admin`| Create a new user (ADMIN role required).                             |
+| GET    | `/users`      | Retrieve all users (ADMIN role required).                            |
+| GET    | `/users/:id`  | Retrieve a user by ID (accessible by ADMIN or the user themselves).  |
+| PATCH  | `/user/:id`   | Update user information (accessible by ADMIN or the user themselves).|
+| DELETE | `/users/.id`  | Delete a user by ID (ADMIN role required).                           |
+
+### Currencies
+
+| Method | Endpoint          | Description                                                          |
+| ------ | ----------------- | -------------------------------------------------------------------- |
+| POST   | `/currencies`     | Create a new currency (ADMIN role required).                         |
+| GET    | `/currencies`     | Retrieve all currencies.                                             |
+| GET    | `/currencies/:id` | Retrieve a currency by ID.                                           |
+| PATCH  | `/currencies/:id` | Update currency information.                                         |
+| DELETE | `/currencies/:id` | Delete a currency by ID. (ADMIN role required).                      |
+
 ## Future Improvements
 
-- Implement role-based access control (RBAC) for better security.
-- Add more comprehensive unit and integration tests.
-- Dockerize the Application to simplify deployment and ensure consistent environments across development, staging, and production.  
+- Add **unit and integration tests** for all modules to ensure reliability and maintainability.
+- **Dockerize** the application for consistent environments across development, staging, and production.  
 
 
