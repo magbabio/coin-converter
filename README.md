@@ -121,7 +121,7 @@ npm run start:dev
 ```
 src/
 ├── auth/                             # Authentication module
-├── config/                           # entralized backend configuration
+├── config/                           # Centralized backend configuration
 ├── conversion/                       # Conversion module
 ├── currencies/                       # Currencies module
 ├── favorite-currencies/              # Favorite currencies module
