@@ -26,9 +26,9 @@ A scalable **NestJS** backend built with **TypeScript**, **Prisma**, and **Postg
 
 - **Exchange Rates Management**: Retrieve and store real-time average exchange rates from Binance via Puppeteer web scraping. 
 - **Currencies Management**: Create, update, and retrieve currency data with full validation and conflict handling.  
-- **Favorite Currencies**: Users can mark currencies as favorites and retrieve personalized lists.
 - **Automated Scraping**: Background CRON jobs run scheduled scraping tasks to keep exchange rates up to date.
 - **Users Management**: Create, update, and delete users with hashed passwords and role-based access control.
+- **Conversion History Management**: Record, retrieve, and track users' currency conversions, providing a full transaction history.
 - **Authentication**: JWT-based authentication for secure access to endpoints.
 - **Validation & Error Handling**: DTO validation and centralized exception handling for robust and consistent API responses.
 
@@ -39,8 +39,8 @@ The project follows a modular architecture. Each module is self-contained, encap
 ### Modules
 
 - **CurrenciesModule**: Handles currency-related operations.  
-- **FavoriteCurrenciesModule**: Allows users to save and manage their favorite currencies.  
-- **ExchangeRateModule** : Stores and manages exchange rate data fetched by the scraper.  
+- **ExchangeRateModule** : Stores and manages exchange rate data fetched by the scraper.
+- **ConversionsModule**: Handles currency conversion operations and stores conversion history for each user.  
 - **PrismaModule**: Centralizes the database connection logic via the `PrismaService`.  
 - **ScraperModule (Binance)**  
   - Uses **Puppeteer** to automate web scraping from Binance P2P.  
@@ -53,7 +53,7 @@ The project follows a modular architecture. Each module is self-contained, encap
 Each module has its own controller to define API endpoints:
 
 - **CurrenciesController**: Endpoints for currencies CRUD operations.
-- **FavoriteCurrenciesController**: Endpoints for favorite currencies management.
+- **ConversionsController**: Endpoints for performing conversions and saving them in the conversion history.  
 - **BinanceController**: Endpoints for scraping and triggering CRON jobs.  
 - **UsersController**: Endpoints for user CRUD operations.
 
@@ -62,7 +62,7 @@ Each module has its own controller to define API endpoints:
 Each module has a service that contains the business logic:
 
 - **CurrenciesService**
-- **FavoriteCurrenciesService**
+- **ConversionsService**
 - **ExchangeRateService**  
 - **BinanceService**  
 - **UsersService**
@@ -73,6 +73,7 @@ Data Transfer Objects (DTOs) are used for input validation:
 
 - **CreateCurrencyDto**: Validates currency creation data.
 - **UpdateCurrencyDto**: Validates currency update data.
+- **ConversionHistoryDto**: Validates conversion history data.
 - **CreateUserDto**: Validates user creation data.
 - **UpdateUserDto**: Validates user update data.
 
@@ -122,9 +123,8 @@ npm run start:dev
 src/
 ├── auth/                             # Authentication module
 ├── config/                           # Centralized backend configuration
-├── conversion/                       # Conversion module
+├── conversions/                      # Conversions module
 ├── currencies/                       # Currencies module
-├── favorite-currencies/              # Favorite currencies module
 ├── filters/                          # Global exception filter
 ├── interceptors/                     # Global response interceptor
 ├── prisma/                           # Prisma ORM configuration and database access
