@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req
+  Req,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { UsersService } from './users.service';
@@ -26,10 +26,7 @@ export class UsersController {
 
   @Post('admin')
   @Roles(Role.ADMIN)
-  createByAdmin(
-    @Body() createUserDto: CreateUserDto, 
-    @Req() req: Request,
-  ) {
+  createByAdmin(@Body() createUserDto: CreateUserDto, @Req() req: Request) {
     const adminId = (req as any).user.userId;
     return this.usersService.createByAdmin(createUserDto, adminId);
   }

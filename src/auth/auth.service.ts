@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -32,7 +36,7 @@ export class AuthService {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      role: user.role
+      role: user.role,
     };
 
     return {
@@ -40,37 +44,37 @@ export class AuthService {
     };
   }
 
- async register(createUserDto: CreateUserDto) {
-  const existingUser = await this.prisma.user.findUnique({
-    where: { email: createUserDto.email },
-  });
+  async register(createUserDto: CreateUserDto) {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: createUserDto.email },
+    });
 
-  if (existingUser) {
-    throw new ConflictException('User with this email already exists');
-  }
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
+    }
 
-  const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-  const user = await this.prisma.user.create({
-    data: {
-      ...createUserDto,
-      password: hashedPassword,
-      role: 'USER', 
-    },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-      role: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
+    const user = await this.prisma.user.create({
+      data: {
+        ...createUserDto,
+        password: hashedPassword,
+        role: 'USER',
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
 
-  return {
-    message: 'User created successfully',
-    data: user,
-  };
+    return {
+      message: 'User created successfully',
+      data: user,
+    };
   }
 }

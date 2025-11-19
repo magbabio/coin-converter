@@ -13,10 +13,9 @@ model User {
   lastName           String
   email              String             @unique
   password           String
-  role               Role               @default(USER) // 👈 NUEVO CAMPO
+  role               Role               @default(USER) 
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
-  favoriteCurrencies FavoriteCurrency[]
   conversions        ConversionHistory[]
 
   @@map("users")
@@ -30,26 +29,12 @@ model Currency {
   type               CurrencyType
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
-  favoriteCurrencies FavoriteCurrency[]
   ratesFrom          ExchangeRate[]      @relation("FromCurrency")
   ratesTo            ExchangeRate[]      @relation("ToCurrency")
   conversionsFrom    ConversionHistory[] @relation("ConversionFrom")
   conversionsTo      ConversionHistory[] @relation("ConversionTo")
 
   @@map("currencies")
-}
-
-model FavoriteCurrency {
-  id         String   @id @default(cuid())
-  userId     String
-  currencyId String
-  createdAt  DateTime @default(now())
-
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  currency   Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, currencyId])
-  @@map("favorite_currencies")
 }
 
 model ExchangeRate {
@@ -76,7 +61,6 @@ model ConversionHistory {
   amount         Float
   result         Float
   rateUsed       Float
-  source         RateSource
   createdAt      DateTime  @default(now())
 
   user           User     @relation(fields: [userId], references: [id])

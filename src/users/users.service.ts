@@ -1,8 +1,15 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User, ResponseWithMessage } from '../users/interfaces/users.interfaces';
+import {
+  User,
+  ResponseWithMessage,
+} from '../users/interfaces/users.interfaces';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -13,7 +20,9 @@ export class UsersService {
     const admin = await this.prisma.user.findUnique({ where: { id: adminId } });
 
     if (!admin || admin.role !== 'ADMIN') {
-      throw new ConflictException('Only admins can create users with custom roles');
+      throw new ConflictException(
+        'Only admins can create users with custom roles',
+      );
     }
 
     const existingUser = await this.prisma.user.findUnique({
@@ -55,7 +64,7 @@ export class UsersService {
         firstName: true,
         lastName: true,
         email: true,
-        role:true,
+        role: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -75,7 +84,7 @@ export class UsersService {
         firstName: true,
         lastName: true,
         email: true,
-        role:true,
+        role: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -95,7 +104,10 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<ResponseWithMessage<User>> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<ResponseWithMessage<User>> {
     const user = await this.prisma.user.findUnique({ where: { id } });
 
     if (!user) {
@@ -150,4 +162,13 @@ export class UsersService {
       data: deletedUser,
     };
   }
+
+  async validateUser(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
 }

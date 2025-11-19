@@ -6,13 +6,18 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCurrencyDto } from './dto/create-currency.dto';
 import { UpdateCurrencyDto } from './dto/update-currency.dto';
-import { Currency, ResponseWithMessage } from './interfaces/currencies.interfaces';
+import {
+  Currency,
+  ResponseWithMessage,
+} from './interfaces/currencies.interfaces';
 
 @Injectable()
 export class CurrenciesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createCurrencyDto: CreateCurrencyDto): Promise<ResponseWithMessage<Currency>> {
+  async create(
+    createCurrencyDto: CreateCurrencyDto,
+  ): Promise<ResponseWithMessage<Currency>> {
     const existingCurrency = await this.prisma.currency.findUnique({
       where: { code: createCurrencyDto.code },
     });
@@ -89,8 +94,13 @@ export class CurrenciesService {
     });
   }
 
-  async update(code: string, updateCurrencyDto: UpdateCurrencyDto): Promise<ResponseWithMessage<Currency>> {
-    const existingCurrency = await this.prisma.currency.findUnique({ where: { code } });
+  async update(
+    code: string,
+    updateCurrencyDto: UpdateCurrencyDto,
+  ): Promise<ResponseWithMessage<Currency>> {
+    const existingCurrency = await this.prisma.currency.findUnique({
+      where: { code },
+    });
 
     if (!existingCurrency) {
       throw new NotFoundException('Currency not found');
