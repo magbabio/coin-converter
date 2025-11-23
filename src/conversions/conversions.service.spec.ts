@@ -34,13 +34,11 @@ describe('ConversionsService', () => {
     }).compile();
 
     service = module.get<ConversionsService>(ConversionsService);
-
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
-
 
   describe('conversion()', () => {
     it('should convert the amount successfully', async () => {
@@ -60,12 +58,11 @@ describe('ConversionsService', () => {
     it('should throw if currencies are invalid', async () => {
       prismaMock.currency.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.conversion('INVALID', 'EUR', 10),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.conversion('INVALID', 'EUR', 10)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
-
 
   describe('create()', () => {
     it('should save conversion successfully', async () => {
@@ -100,7 +97,6 @@ describe('ConversionsService', () => {
       expect(prismaMock.conversionHistory.create).toHaveBeenCalled();
     });
   });
-
 
   describe('getUserHistory()', () => {
     it('should return user history', async () => {

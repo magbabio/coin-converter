@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConversionHistoryDto } from './dto/conversion-history.dto';
 import { UsersService } from '../users/users.service';
@@ -10,10 +7,13 @@ import { UsersService } from '../users/users.service';
 export class ConversionsService {
   constructor(
     private prisma: PrismaService,
-    private usersService: UsersService, 
+    private usersService: UsersService,
   ) {}
 
-  private async validateCurrencies(fromCurrencyId: string, toCurrencyId: string) {
+  private async validateCurrencies(
+    fromCurrencyId: string,
+    toCurrencyId: string,
+  ) {
     const [from, to] = await Promise.all([
       this.prisma.currency.findUnique({ where: { id: fromCurrencyId } }),
       this.prisma.currency.findUnique({ where: { id: toCurrencyId } }),
@@ -39,7 +39,11 @@ export class ConversionsService {
     return rate;
   }
 
-  async conversion(fromCurrencyId: string, toCurrencyId: string, amount: number) {
+  async conversion(
+    fromCurrencyId: string,
+    toCurrencyId: string,
+    amount: number,
+  ) {
     await this.validateCurrencies(fromCurrencyId, toCurrencyId);
 
     const latestRate = await this.getLatestRate(fromCurrencyId, toCurrencyId);
@@ -85,7 +89,7 @@ export class ConversionsService {
   }
 
   async getUserHistory(userId: string) {
-    await this.usersService.validateUser(userId); 
+    await this.usersService.validateUser(userId);
 
     const history = await this.prisma.conversionHistory.findMany({
       where: { userId },

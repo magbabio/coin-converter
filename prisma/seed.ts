@@ -47,7 +47,7 @@ async function main() {
       lastName: 'User',
       email: 'admin@example.com',
       password: hashedPassword,
-      role: Role.ADMIN, 
+      role: Role.ADMIN,
     },
     {
       firstName: 'Jane',
@@ -65,55 +65,6 @@ async function main() {
       create: user,
     });
   }
-
-  const admin = await prisma.user.findUnique({
-    where: { email: 'admin@example.com' },
-  });
-
-  const jane = await prisma.user.findUnique({
-    where: { email: 'jane.smith@example.com' },
-  });
-
-  const usdt = await prisma.currency.findUnique({
-    where: { code: 'USDT' },
-  });
-
-  const eur = await prisma.currency.findUnique({
-    where: { code: 'EUR' },
-  });
-
-  if (admin && usdt) {
-    await prisma.favoriteCurrency.upsert({
-      where: {
-        userId_currencyId: {
-          userId: admin.id,
-          currencyId: usdt.id,
-        },
-      },
-      update: {},
-      create: {
-        userId: admin.id,
-        currencyId: usdt.id,
-      },
-    });
-  }
-
-  if (jane && eur) {
-    await prisma.favoriteCurrency.upsert({
-      where: {
-        userId_currencyId: {
-          userId: jane.id,
-          currencyId: eur.id,
-        },
-      },
-      update: {},
-      create: {
-        userId: jane.id,
-        currencyId: eur.id,
-      },
-    });
-  }
-
 }
 
 main()

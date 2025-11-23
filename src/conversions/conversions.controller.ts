@@ -9,11 +9,15 @@ export class ConversionsController {
 
   @Get()
   conversion(
-    @Query('fromCurrencyId') fromCurrencyId: string, 
+    @Query('fromCurrencyId') fromCurrencyId: string,
     @Query('toCurrencyId') toCurrencyId: string,
-    @Query('amount') amount: number
+    @Query('amount') amount: number,
   ) {
-    return this.conversionsService.conversion(fromCurrencyId, toCurrencyId, Number(amount));
+    return this.conversionsService.conversion(
+      fromCurrencyId,
+      toCurrencyId,
+      Number(amount),
+    );
   }
 
   @Post()
@@ -25,5 +29,4 @@ export class ConversionsController {
   getUserHistory(@Param('userId') userId: string) {
     return this.conversionsService.getUserHistory(userId);
   }
-
 }

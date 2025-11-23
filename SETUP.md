@@ -54,6 +54,7 @@ npm run start:dev
 ## API Endpoints
 
 ### Users
+
 - `POST /users` - Create a new user
 - `GET /users` - Get all users
 - `GET /users/:id` - Get user by ID
@@ -61,6 +62,7 @@ npm run start:dev
 - `DELETE /users/:id` - Delete user
 
 ### Currencies
+
 - `POST /currencies` - Create a new currency
 - `GET /currencies` - Get all currencies
 - `GET /currencies/:id` - Get currency by ID
@@ -69,6 +71,7 @@ npm run start:dev
 - `POST /currencies/update-rates` - Update currency rates
 
 ### Favorite Currencies
+
 - `POST /favorite-currencies` - Add currency to favorites
 - `GET /favorite-currencies` - Get all favorite currencies
 - `GET /favorite-currencies/user/:userId` - Get user's favorite currencies
@@ -79,6 +82,7 @@ npm run start:dev
 ## Database Schema
 
 ### User
+
 - `id` (String, Primary Key)
 - `firstName` (String)
 - `lastName` (String)
@@ -88,6 +92,7 @@ npm run start:dev
 - `updatedAt` (DateTime)
 
 ### Currency
+
 - `id` (String, Primary Key)
 - `name` (String)
 - `code` (String, Unique)
@@ -98,6 +103,7 @@ npm run start:dev
 - `updatedAt` (DateTime)
 
 ### FavoriteCurrency
+
 - `id` (String, Primary Key)
 - `userId` (String, Foreign Key)
 - `currencyId` (String, Foreign Key)
@@ -111,4 +117,4 @@ npm run start:dev
 - Real-time currency rate updates
 - RESTful API endpoints
 - Input validation using class-validator
-- Error handling with proper HTTP status codes 
+- Error handling with proper HTTP status codes
